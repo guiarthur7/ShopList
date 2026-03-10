@@ -10,6 +10,14 @@
     <div class="container">
         <h1>Bienvenue sur ShopList</h1>
         <p>Gérez vos listes de courses facilement</p>
+        <div class="search">
+            <input type="text" id="recherche" placeholder="Rechercher...">
+            <button id="validerRecherche">Valider</button>
+        </div>
+        <div id="listeProduits">
+        </div>
+
+
         
         <div class="buttons">
             <a href="login.html" class="btn">Se connecter</a>
@@ -18,3 +26,35 @@
     </div>
 </body>
 </html>
+
+<script>
+    async function afficherProduits() {
+        const response = await fetch('/api/produits');
+        const produits = await response.json();
+
+        produits.forEach(produit => {
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <p>${produit.name} - ${produit.price}€</p>
+                <button>Ajouter<button>
+            `;
+            document.getElementById('listeProduits').appendChild(div);
+        });
+    }
+    afficherProduits();
+
+async function rechercherProduit() {
+    const valeurRecherche = document.getElementById('recherche').value;
+    const response = await fetch(`/api/produits?search=${encodeURIComponent(valeurRecherche)}`);
+    const produits = await response.json();
+    document.getElementById('listeProduits').innerHTML = '';
+    produits.forEach(produit => {
+        const div = document.createElement('div')
+        div.innerHTML = `
+        <p>${produit.name} - ${produit.price}<p>
+        <button>Ajouter<button>`
+        document.getElementById('listeProduits').appendChild(div);
+    });
+}
+document.getElementById('validerRecherche').addEventListener('click', rechercherProduit);
+</script>

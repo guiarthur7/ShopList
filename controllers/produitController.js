@@ -1,23 +1,21 @@
-// Controller pour les produits (CRUD)
-
-// TODO: Importer le modèle produit
-
-// Créer un produit
-exports.createProduit = async (req, res) => {
-  // TODO: Créer un nouveau produit
-};
-
-// Récupérer tous les produits
+const { produit } = require("../models");
+exports.createProduit = async (req, res) => {};
 exports.getAllProduits = async (req, res) => {
-  // TODO: Récupérer tous les produits
+  const produits = await produit.findAll();
+  res.json(produits);
 };
 
-// Récupérer un produit spécifique
-exports.getProduitById = async (req, res) => {
-  // TODO: Récupérer un produit par son ID
+exports.getProduitByName = async (req, res) => {
+  const search = req.query.search;
+  let resultats = [];
+  let produits = await produit.findAll();
+  produits.forEach((element) => {
+    if (element.name === search) resultats.push(element);
+  });
+  if (resultats.length === 0) {
+    resultats = produits;
+  }
+  res.json(resultats);
 };
 
-// Supprimer un produit
-exports.deleteProduit = async (req, res) => {
-  // TODO: Supprimer un produit
-};
+exports.deleteProduit = async (req, res) => {};
