@@ -4,8 +4,8 @@ const { users } = require("../models");
 const { role } = require("../models");
 
 exports.register = async (req, res) => {
-  const username = req.query.username;
-  const password = await bcrypt.hash(req.query.password, 10);
+  const { username, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
   const existingUser = await users.findOne({ where: { username } });
   if (existingUser) {
     return res
@@ -19,7 +19,7 @@ exports.register = async (req, res) => {
   }
   const user = await users.create({
     username,
-    password,
+    password: hashedPassword,
     role_id: roles.id,
   });
   const token = jwt.sign({ id: user.id, username: user.username }, secret, {
@@ -31,8 +31,7 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const username = req.query.username;
-  const password = req.query.password;
+  const { username, password } = req.body;
   const user = await users.findOne({ where: { username } });
   if (!user) {
     return res

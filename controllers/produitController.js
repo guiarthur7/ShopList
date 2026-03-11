@@ -1,6 +1,16 @@
 const { produit } = require("../models");
 
-exports.createProduit = async (req, res) => {};
+exports.createProduit = async (req, res) => {
+  console.log(req.body);
+  const { name, prix } = req.body;
+  const prod = await produit.create({ name: name, price: prix });
+
+  if (prod) {
+    res.status(201).json({ message: "Produit créer avec succès" });
+  } else {
+    res.status(404).json({ error: "Erreur lors de la création d'un produit" });
+  }
+};
 
 exports.getAllProduits = async (req, res) => {
   const produits = await produit.findAll();

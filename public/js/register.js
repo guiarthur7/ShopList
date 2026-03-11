@@ -8,9 +8,11 @@ function ValiderInscription(event) {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  const url = `api/users/register?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
-
-  fetch(url)
+  fetch("/api/users/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  })
     .then((response) => response.json())
     .then((data) => {
       if (data.message) {

@@ -73,8 +73,8 @@ if (username) {
 
 if (username === "admin") {
   document.getElementById("creation").innerHTML = `<form id="createForm">
-    <input type="text" placeholder="Nom du produit">
-    <input type="text" placeholder="Prix du produit">
+    <input type="text" id="nom" placeholder="Nom du produit">
+    <input type="text" id ="prix" placeholder="Prix du produit">
     <button id="creer">Créer ce produit</button>
   </form>`;
 }
@@ -84,6 +84,25 @@ if (formdiv) {
   formdiv.addEventListener("submit", CreateProduit);
 }
 
-function CreateProduit() {}
+function CreateProduit(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("nom").value;
+  const prix = document.getElementById("prix").value;
+
+  fetch("/api/produits/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, prix }),
+  })
+    .then((message) => message.json())
+    .then((data) => {
+      if (data.message) {
+        location.reload();
+      } else if (data.error) {
+        alert("Erreur de création d'un produit");
+      }
+    });
+}
 
 afficherProduits();
