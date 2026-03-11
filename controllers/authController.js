@@ -12,7 +12,7 @@ exports.register = async (req, res) => {
       .json({ error: "Un utilisateur existe déjà avec ce nom" });
   }
   const secret = process.env.JWT_SECRET;
-  const user = await users.create({ username, password });
+  const user = await users.create({ username, password, role_id: 2 });
   const token = jwt.sign({ id: user.id, username: user.username }, secret, {
     expiresIn: "24h",
   });
