@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { users } = require("../models");
+const { role } = require("../models");
 
 exports.register = async (req, res) => {
   const username = req.query.username;
@@ -12,7 +13,15 @@ exports.register = async (req, res) => {
       .json({ error: "Un utilisateur existe déjà avec ce nom" });
   }
   const secret = process.env.JWT_SECRET;
-  const user = await users.create({ username, password, role_id: 2 });
+  const roles = await role.findOne({ where: { name: "USER" } });
+  if (!roles) {
+    return res.status(404).json("Erreur lors de l'attribution du rôle");
+  }
+  const user = await users.create({
+    username,
+    password,
+    role_id: roles.id,
+  });
   const token = jwt.sign({ id: user.id, username: user.username }, secret, {
     expiresIn: "24h",
   });

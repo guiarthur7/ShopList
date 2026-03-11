@@ -59,6 +59,7 @@ document
   .addEventListener("click", rechercherProduit);
 
 const username = localStorage.getItem("username");
+
 if (username) {
   document.getElementById("auth-buttons").style.display = "none";
   document.getElementById("user-info").innerHTML =
@@ -70,5 +71,19 @@ if (username) {
   });
 }
 
+if (username === "admin") {
+  document.getElementById("creation").innerHTML = `<form id="createForm">
+    <input type="text" placeholder="Nom du produit">
+    <input type="text" placeholder="Prix du produit">
+    <button id="creer">Créer ce produit</button>
+  </form>`;
+}
+
+const formdiv = document.getElementById("createForm");
+if (formdiv) {
+  formdiv.addEventListener("submit", CreateProduit);
+}
+
+function CreateProduit() {}
+
 afficherProduits();
-// La gestion du bouton supprimer est maintenant faite dynamiquement ci-dessus
