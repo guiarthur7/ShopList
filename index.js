@@ -5,6 +5,7 @@ const PORT = 8080;
 const express = require("express");
 const { sequelize, liste, produit, users } = require("./models");
 const produitRoutes = require("./routes/produitRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 // Test connexion base de données
 sequelize
@@ -19,6 +20,7 @@ sequelize
 const server = express();
 server.use(express.json()); // Parser le JSON des requêtes
 server.use("/api/produits", produitRoutes);
+server.use("/api/users", authRoutes);
 
 // Servir les fichiers statiques (HTML, CSS, JS) depuis le dossier public
 server.use(express.static("public"));
