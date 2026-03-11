@@ -18,4 +18,11 @@ exports.getProduitByName = async (req, res) => {
   res.json(resultats);
 };
 
-exports.deleteProduit = async (req, res) => {};
+exports.deleteProduit = async (req, res) => {
+  deleted = await produit.destroy({ where: { id: req.params.id } });
+  if (deleted) {
+    res.status(200).json("Produit supprimé avec succès");
+  } else {
+    res.status(404).json("Problème lors de la suppresion");
+  }
+};
