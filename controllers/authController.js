@@ -21,4 +21,26 @@ exports.register = async (req, res) => {
     .json({ message: "Utilisateur créé avec succès", token });
 };
 
-exports.login = async (req, res) => {};
+exports.login = async (req, res) => {
+  const username = req.query.username;
+  const password = req.query.password;
+  const user = await users.findOne({ where: { username } });
+  if (!user) {
+    return res
+      .status(400)
+      .json({ error: "Utilisateur ou mot de passe incorrect" });
+  }
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) {
+    return res
+      .status(400)
+      .json({ error: "Utilisateur ou mot de passe incorrect" });
+  }
+  const secret = process.env.JWT_SECRET;
+  const token = jwt.sign({ id: user.id, username: user.username }, secret, {
+    expiresIn: "24h",
+  });
+  return res
+    .status(200)
+    .json({ message: "Utilisateur connecté avec succès", token });
+};

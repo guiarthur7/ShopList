@@ -40,6 +40,7 @@ if (username) {
     `Bienvenue ${username} - <button id="logout">Se déconnecter</button>`;
   document.getElementById("logout").addEventListener("click", function () {
     localStorage.removeItem("username");
+    localStorage.removeItem("token");
     location.reload();
   });
 }
