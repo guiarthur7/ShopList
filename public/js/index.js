@@ -7,9 +7,16 @@ async function afficherProduits() {
     div.innerHTML = `
                 <p>${produit.name} - ${produit.price}€</p>
                 <button onclick="ajouterAuPanier(ID_DU_PRODUIT)">Ajouter</button>
+                <div class="adminbouton"></div>
             `;
     document.getElementById("listeProduits").appendChild(div);
   });
+
+  if (username === "admin") {
+    document.querySelectorAll(".adminbouton").forEach((div) => {
+      div.innerHTML = `<button>Supprimer</button>`;
+    });
+  }
 }
 afficherProduits();
 
@@ -25,10 +32,17 @@ async function rechercherProduit() {
     div.innerHTML = `
                 <p>${produit.name} - ${produit.price}€</p>
                 <button onclick="ajouterAuPanier(ID_DU_PRODUIT)">Ajouter</button>
+                <div class="adminbouton"></div>
             `;
     document.getElementById("listeProduits").appendChild(div);
   });
+  if (username === "admin") {
+    document.querySelectorAll(".adminbouton").forEach((div) => {
+      div.innerHTML = `<button>Supprimer</button>`;
+    });
+  }
 }
+
 document
   .getElementById("validerRecherche")
   .addEventListener("click", rechercherProduit);
