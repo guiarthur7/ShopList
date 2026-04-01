@@ -16,7 +16,7 @@ async function afficherProduits() {
     const div = document.createElement("div");
     div.innerHTML = `
       <p>${produit.name} - ${produit.price}€</p>
-      <button onclick="ajouterAuPanier(${produit.id})">Ajouter</button>
+      ${!username ? "" : `<button onclick="ajouterAuPanier(${produit.id})">Ajouter</button>`}
       <div class="adminbouton">
         ${username === "admin" ? `<button class="delete-btn" data-id="${produit.id}">Supprimer</button>` : ""}
       </div>
@@ -50,7 +50,9 @@ async function rechercherProduit() {
     const div = document.createElement("div");
     div.innerHTML = `
       <p>${produit.name} - ${produit.price}€</p>
-      <button onclick="ajouterAuPanier(${produit.id})">Ajouter</button>
+      <div>
+        ${!username ? " " : `<button onclick="ajouterAuPanier(${produit.id})">Ajouter</button>`}
+      </div>
       <div class="adminbouton">
         ${username === "admin" ? `<button class="delete-btn" data-id="${produit.id}">Supprimer</button>` : ""}
       </div>
@@ -77,7 +79,7 @@ const username = localStorage.getItem("username");
 if (username) {
   document.getElementById("auth-buttons").style.display = "none";
   document.getElementById("user-info").innerHTML =
-    `Bienvenue ${username} <button id="logout">Se déconnecter</button>`;
+    `Bienvenue ${username} <a href="./dashboard.html"><button id="see-panier">Voir mon panier</button></a> <button id="logout">Se déconnecter</button>`;
   document.getElementById("logout").addEventListener("click", function () {
     localStorage.removeItem("username");
     localStorage.removeItem("token");
@@ -134,5 +136,13 @@ document.getElementById("last-page").addEventListener("click", function () {
     afficherProduits();
   }
 });
+
+function ajouterAuPanier(idProduit) {
+  fetch("/api/liste/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, idProduit }),
+  });
+}
 
 afficherProduits();

@@ -6,6 +6,7 @@ const express = require("express");
 const { sequelize, liste, produit, users } = require("./models");
 const produitRoutes = require("./routes/produitRoutes");
 const authRoutes = require("./routes/authRoutes");
+const listeRoutes = require("./routes/listeRoutes");
 
 // Test connexion base de données
 sequelize
@@ -21,6 +22,7 @@ const server = express();
 server.use(express.json()); // Parser le JSON des requêtes
 server.use("/api/produits", produitRoutes);
 server.use("/api/users", authRoutes);
+server.use("/api/liste", listeRoutes);
 
 // Servir les fichiers statiques (HTML, CSS, JS) depuis le dossier public
 server.use(express.static("public"));
