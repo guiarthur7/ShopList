@@ -121,21 +121,33 @@ function CreateProduit(event) {
     });
 }
 
-document.getElementById("next-page").addEventListener("click", function () {
-  offset += limit;
-  document.getElementById("index-pagination").innerHTML =
-    `Page : ${offset / 10}`;
-  afficherProduits();
-});
-
-document.getElementById("last-page").addEventListener("click", function () {
-  if (offset >= limit) {
-    offset -= limit;
+document
+  .getElementById("next-page")
+  .addEventListener("click", async function () {
+    const previousScrollY = window.scrollY;
+    offset += limit;
     document.getElementById("index-pagination").innerHTML =
       `Page : ${offset / 10}`;
-    afficherProduits();
-  }
-});
+    await afficherProduits();
+    window.requestAnimationFrame(() => {
+      window.scrollTo(0, previousScrollY);
+    });
+  });
+
+document
+  .getElementById("last-page")
+  .addEventListener("click", async function () {
+    if (offset >= limit) {
+      const previousScrollY = window.scrollY;
+      offset -= limit;
+      document.getElementById("index-pagination").innerHTML =
+        `Page : ${offset / 10}`;
+      await afficherProduits();
+      window.requestAnimationFrame(() => {
+        window.scrollTo(0, previousScrollY);
+      });
+    }
+  });
 
 function ajouterAuPanier(idProduit) {
   fetch("/api/liste/add", {
