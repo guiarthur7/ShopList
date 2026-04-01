@@ -53,11 +53,8 @@ form {
 }
 
 input[type="text"],
-input[type="email"],
 input[type="password"],
-input[type="number"],
-textarea,
-select {
+input[type="number"] {
     background: #2c2f33;
     color: #f1f1f1;
     border: 1px solid #444;
@@ -70,26 +67,17 @@ select {
 }
 
 input[type="text"]::placeholder,
-input[type="email"]::placeholder,
 input[type="password"]::placeholder,
-input[type="number"]::placeholder,
-textarea::placeholder {
+input[type="number"]::placeholder {
     color: #778899;
 }
 
 input[type="text"]:focus,
-input[type="email"]:focus,
 input[type="password"]:focus,
 input[type="number"]:focus,
-textarea:focus,
-select:focus {
+textarea:focus {
     border-color: #5dade2;
     background: #2c2f33;
-}
-
-textarea {
-    resize: vertical;
-    min-height: 100px;
 }
 
 /* ============ SEARCH & PRODUCTS ============ */
@@ -203,47 +191,12 @@ button:disabled, .btn:disabled {
     background: #666;
 }
 
-#logoutBtn {
-    background: #e74c3c;
-    float: right;
-    margin-bottom: 20px;
-    padding: 8px 16px;
-}
-
-#logoutBtn:hover {
-    background: #c0392b;
-}
-
 .buttons {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 20px;
     flex-wrap: wrap;
-}
-
-.btn-secondary {
-    background: #555;
-}
-
-.btn-secondary:hover {
-    background: #777;
-}
-
-.btn-danger {
-    background: #e74c3c;
-}
-
-.btn-danger:hover {
-    background: #c0392b;
-}
-
-.btn-success {
-    background: #27ae60;
-}
-
-.btn-success:hover {
-    background: #229954;
 }
 
 a.btn {
