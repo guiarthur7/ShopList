@@ -13,12 +13,17 @@ exports.createProduit = async (req, res) => {
 };
 
 exports.getAllProduits = async (req, res) => {
+  const offset = Number(req.query.offset) || 0;
+  const limit = Number(req.query.limit) || 10;
   const produits = await produit.findAll();
-  res.json(produits);
+  const paginationProduit = produits.slice(offset, offset + limit);
+  res.json(paginationProduit);
 };
 
 exports.getProduitByName = async (req, res) => {
   const search = req.query.search;
+  const offset = Number(req.query.offset) || 0;
+  const limit = Number(req.query.limit) || 10;
   let resultats = [];
   let produits = await produit.findAll();
   produits.forEach((element) => {
@@ -27,7 +32,8 @@ exports.getProduitByName = async (req, res) => {
   if (resultats.length === 0) {
     resultats = produits;
   }
-  res.json(resultats);
+  const paginationResultats = resultats.slice(offset, offset + limit);
+  res.json(paginationResultats);
 };
 
 exports.deleteProduit = async (req, res) => {

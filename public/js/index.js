@@ -1,9 +1,12 @@
+let offset = 0;
+let limit = 10;
+
 async function afficherProduits() {
   document.getElementById("listeProduits").innerHTML = "";
-  const response = await fetch("/api/produits");
-  const produits = await response.json();
+  const response = await fetch(`/api/produits?offset=${offset}&limit=${limit}`);
+  const data = await response.json();
 
-  produits.forEach((produit) => {
+  data.forEach((produit) => {
     const div = document.createElement("div");
     div.innerHTML = `
       <p>${produit.name} - ${produit.price}€</p>
@@ -29,10 +32,10 @@ async function rechercherProduit() {
   document.getElementById("listeProduits").innerHTML = "";
   const valeurRecherche = document.getElementById("recherche").value;
   const response = await fetch(
-    `/api/produits?search=${encodeURIComponent(valeurRecherche)}`,
+    `/api/produits?search=${encodeURIComponent(valeurRecherche)}&offset=${offset}&limit=${limit}`,
   );
-  const produits = await response.json();
-  produits.forEach((produit) => {
+  const data = await response.json();
+  data.forEach((produit) => {
     const div = document.createElement("div");
     div.innerHTML = `
       <p>${produit.name} - ${produit.price}€</p>
@@ -104,5 +107,17 @@ function CreateProduit(event) {
       }
     });
 }
+
+document.getElementById("next-page").addEventListener("click", function () {
+  offset += limit; // On avance de 10
+  afficherProduits();
+});
+
+document.getElementById("last-page").addEventListener("click", function () {
+  if (offset >= limit) {
+    offset -= limit;
+    afficherProduits();
+  }
+});
 
 afficherProduits();
