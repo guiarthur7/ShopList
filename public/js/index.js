@@ -4,6 +4,12 @@ let limit = 10;
 async function afficherProduits() {
   document.getElementById("listeProduits").innerHTML = "";
   const response = await fetch(`/api/produits?offset=${offset}&limit=${limit}`);
+
+  if (!response.ok) {
+    alert("Erreur lors du chargement des produits");
+    offset = Math.max(0, offset - limit);
+    return;
+  }
   const data = await response.json();
 
   data.forEach((produit) => {
@@ -32,8 +38,13 @@ async function rechercherProduit() {
   document.getElementById("listeProduits").innerHTML = "";
   const valeurRecherche = document.getElementById("recherche").value;
   const response = await fetch(
-    `/api/produits?search=${encodeURIComponent(valeurRecherche)}&offset=${offset}&limit=${limit}`,
+    `/api/produits/search?search=${encodeURIComponent(valeurRecherche)}&offset=${offset}&limit=${limit}`,
   );
+  if (!response.ok) {
+    const err = await response.json();
+    alert(err.error || "Erreur lors de la recherche");
+    return;
+  }
   const data = await response.json();
   data.forEach((produit) => {
     const div = document.createElement("div");
@@ -66,7 +77,7 @@ const username = localStorage.getItem("username");
 if (username) {
   document.getElementById("auth-buttons").style.display = "none";
   document.getElementById("user-info").innerHTML =
-    `Bienvenue ${username} | <button id="logout">Se déconnecter</button>`;
+    `Bienvenue ${username} <button id="logout">Se déconnecter</button>`;
   document.getElementById("logout").addEventListener("click", function () {
     localStorage.removeItem("username");
     localStorage.removeItem("token");
@@ -109,13 +120,17 @@ function CreateProduit(event) {
 }
 
 document.getElementById("next-page").addEventListener("click", function () {
-  offset += limit; // On avance de 10
+  offset += limit;
+  document.getElementById("index-pagination").innerHTML =
+    `Page : ${offset / 10}`;
   afficherProduits();
 });
 
 document.getElementById("last-page").addEventListener("click", function () {
   if (offset >= limit) {
     offset -= limit;
+    document.getElementById("index-pagination").innerHTML =
+      `Page : ${offset / 10}`;
     afficherProduits();
   }
 });

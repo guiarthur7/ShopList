@@ -17,7 +17,11 @@ exports.getAllProduits = async (req, res) => {
   const limit = Number(req.query.limit) || 10;
   const produits = await produit.findAll();
   const paginationProduit = produits.slice(offset, offset + limit);
-  res.json(paginationProduit);
+  if (paginationProduit.length === 0) {
+    res.status(404).json({ error: "Il n'y a plus de produit à afficher" });
+  } else {
+    res.json(paginationProduit);
+  }
 };
 
 exports.getProduitByName = async (req, res) => {
