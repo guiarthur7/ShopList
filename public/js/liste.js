@@ -25,6 +25,11 @@ async function afficherProduits() {
       <div class="product-actions">
         ${!token ? "" : `<button class="btn btn-primary" onclick="ajouterAuPanier(${produit.id})">Ajouter</button>`}
         ${username === "admin" ? `<button class="btn delete-btn" data-id="${produit.id}">Supprimer</button>` : ""}
+        ${
+          username === "admin"
+            ? `<a href="/modifproduit.html?id=${produit.id}" class="btn btn-warning">Modifier</a>`
+            : ""
+        }
       </div>
     `;
     container.appendChild(div);
@@ -32,6 +37,13 @@ async function afficherProduits() {
 
   if (username === "admin") {
     document.querySelectorAll(".delete-btn").forEach((btn) => {
+      btn.onclick = async function () {
+        const id = this.dataset.id;
+        await fetch(`/api/produits/${id}`, { method: "DELETE" });
+        afficherProduits();
+      };
+    });
+    document.querySelectorAll(".modif-btn").forEach((btn) => {
       btn.onclick = async function () {
         const id = this.dataset.id;
         await fetch(`/api/produits/${id}`, { method: "DELETE" });
@@ -115,7 +127,6 @@ function updateHeader() {
 }
 
 updateHeader();
-
 
 if (username === "admin") {
   const creationDiv = document.getElementById("creation");

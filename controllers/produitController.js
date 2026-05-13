@@ -48,3 +48,25 @@ exports.deleteProduit = async (req, res) => {
     res.status(404).json("Problème lors de la suppresion");
   }
 };
+
+exports.getProduitById = async (req, res) => {
+  const prod = await produit.findByPk(req.params.id);
+  if (prod) {
+    res.json(prod);
+  } else {
+    res.status(404).json({ error: "Produit non trouvé" });
+  }
+};
+
+exports.updateProduit = async (req, res) => {
+  const { name, price } = req.body;
+  const updated = await produit.update(
+    { name, price },
+    { where: { id: req.params.id } },
+  );
+  if (updated[0] > 0) {
+    res.json({ message: "Produit mis à jour avec succès" });
+  } else {
+    res.status(404).json({ error: "Erreur lors de la mise à jour" });
+  }
+};
