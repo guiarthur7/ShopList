@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopList - Ma Liste</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        if (!localStorage.getItem('token')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-content">
+            <a href="/index.html"><div class="logo">ShopList</div></a>
+            <nav id="nav-actions">
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div id="creation">
+        </div>
+        <div id="pagination">
+            <div class="search">
+                <input type="text" id="recherche" placeholder="Rechercher...">
+                <button id="validerRecherche">Valider</button>
+                <button id="last-page">Précédente</button>
+                <button id="next-page">Suivante</button>
+            </div>
+            <p id="index-pagination"></p>
+        </div>
+
+        <div id="listeProduits"></div>
+    </div>
+    <script src="js/utils.js"></script>
+    <script src="js/liste.js"></script>
+</body>
+</html>

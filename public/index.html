@@ -3,34 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShopList - Accueil</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>ShopList</title>
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
     <header class="main-header">
         <div class="header-content">
-            <div class="logo">ShopList</div>
+            <div class="logo" onclick="window.location.href='/'">ShopList</div>
             <nav id="nav-actions">
+                <div class="auth-buttons-wrapper">
+                    <a href="/login.html" class="btn header-btn">Connexion</a>
+                    <a href="/register.html" class="btn btn-primary header-btn">S'inscrire</a>
+                </div>
             </nav>
         </div>
     </header>
 
-    <div class="container">
-        
-        <div id="creation">
-        </div>
-        <div id="pagination">
-            <div class="search">
-                <input type="text" id="recherche" placeholder="Rechercher...">
-                <button id="validerRecherche">Valider</button>
-                <button id="last-page">Précédente</button>
-                <button id="next-page">Suivante</button>
+    <main>
+        <section class="hero">
+            <h1 class="hero-title">Simplifiez vos courses,<br>maîtrisez votre budget.</h1>
+            <p class="hero-subtitle">
+                ShopList vous aide à organiser vos achats, suivre vos dépenses et ne plus rien oublier. Simple, rapide et moderne.
+            </p>
+            <div class="cta-group" id="main-cta">
+                <a href="/register.html" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem;">Démarrer gratuitement</a>
             </div>
-            <p id="index-pagination"></p>
-        </div>
+        </section>
 
-        <div id="listeProduits"></div>
-    </div>
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                </div>
+                <h3>Gestion Simple</h3>
+                <p>Ajoutez et supprimez vos produits en un clic. Une interface épurée pensée pour l'efficacité.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+                <h3>Suivi du Budget</h3>
+                <p>Gardez un œil sur le total de vos courses en temps réel pour éviter les surprises à la caisse.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+                </div>
+                <h3>Accès Instantané</h3>
+                <p>Retrouvez votre liste partout, que ce soit sur votre ordinateur ou votre smartphone.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--card-border);">
+        &copy; 2026 ShopList - Créé avec passion
+    </footer>
+
     <script src="js/utils.js"></script>
     <script src="js/index.js"></script>
 </body>

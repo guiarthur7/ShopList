@@ -1,4 +1,9 @@
-const username = localStorage.username;
+const username = localStorage.getItem("username");
+const token = localStorage.getItem("token");
+
+if (!token) {
+  window.location.href = "index.html";
+}
 
 async function AfficherListeProduit() {
   const listesContainer = document.getElementById("listeProduits");

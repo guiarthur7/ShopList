@@ -18,7 +18,7 @@ function ValiderInscription(event) {
       if (data.message) {
         localStorage.setItem("username", username);
         localStorage.setItem("token", data.token);
-        window.location.href = "index.html";
+        window.location.href = "liste.html";
       } else if (data.error) {
         showToast(data.error, "error");
       }
