@@ -99,6 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         clearInterval(timer);
       }
-    }, 80);
+    }, 60);
   }
 });
