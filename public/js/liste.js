@@ -22,14 +22,11 @@ async function afficherProduits() {
     div.className = "product-item";
     div.innerHTML = `
       <p>${produit.name} - ${produit.price}€</p>
+      <a href="/produit.html?id=${produit.id}"><p>-></p></a>
       <div class="product-actions">
         ${!token ? "" : `<button class="btn btn-primary" onclick="ajouterAuPanier(${produit.id})">Ajouter</button>`}
         ${username === "admin" ? `<button class="btn delete-btn" data-id="${produit.id}">Supprimer</button>` : ""}
-        ${
-          username === "admin"
-            ? `<a href="/modifproduit.html?id=${produit.id}" class="btn btn-warning">Modifier</a>`
-            : ""
-        }
+        ${username === "admin" ? `<a href="/modifproduit.html?id=${produit.id}" class="btn btn-warning">Modifier</a>` : ""}
       </div>
     `;
     container.appendChild(div);
@@ -39,15 +36,15 @@ async function afficherProduits() {
     document.querySelectorAll(".delete-btn").forEach((btn) => {
       btn.onclick = async function () {
         const id = this.dataset.id;
-        await fetch(`/api/produits/${id}`, { method: "DELETE" });
-        afficherProduits();
-      };
-    });
-    document.querySelectorAll(".modif-btn").forEach((btn) => {
-      btn.onclick = async function () {
-        const id = this.dataset.id;
-        await fetch(`/api/produits/${id}`, { method: "DELETE" });
-        afficherProduits();
+        if (confirm("Supprimer ce produit ?")) {
+          await fetch(`/api/produits/${id}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`, // Protection Middleware
+            },
+          });
+          afficherProduits();
+        }
       };
     });
   }
@@ -57,17 +54,20 @@ async function rechercherProduit() {
   const container = document.getElementById("listeProduits");
   if (!container) return;
 
-  container.innerHTML = "";
   const valeurRecherche = document.getElementById("recherche").value;
   const response = await fetch(
     `/api/produits/search?search=${encodeURIComponent(valeurRecherche)}&offset=${offset}&limit=${limit}`,
   );
+
   if (!response.ok) {
     const err = await response.json();
     alert(err.error || "Erreur lors de la recherche");
     return;
   }
+
   const data = await response.json();
+  container.innerHTML = "";
+
   data.forEach((produit) => {
     const div = document.createElement("div");
     div.className = "product-item";
@@ -85,35 +85,69 @@ async function rechercherProduit() {
     document.querySelectorAll(".delete-btn").forEach((btn) => {
       btn.onclick = async function () {
         const id = this.dataset.id;
-        await fetch(`/api/produits/${id}`, { method: "DELETE" });
+        await fetch(`/api/produits/${id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         rechercherProduit();
       };
     });
   }
 }
 
-const searchBtn = document.getElementById("validerRecherche");
-if (searchBtn) {
-  searchBtn.addEventListener("click", rechercherProduit);
+function CreateProduit(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("nom").value;
+  const prix = document.getElementById("prix").value;
+
+  fetch("/api/produits/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ name, prix }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.id || data.message) {
+        location.reload();
+      } else {
+        alert("Erreur de création du produit");
+      }
+    });
 }
 
-const navActions = document.getElementById("nav-actions");
+window.ajouterAuPanier = function (idProduit) {
+  fetch("/api/liste/add", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`, // Sécurisé aussi
+    },
+    body: JSON.stringify({ username, idProduit }),
+  }).then(() => {
+    showToast("Produit ajouté au panier !", "success");
+  });
+};
 
 function updateHeader() {
+  const navActions = document.getElementById("nav-actions");
   if (!navActions) return;
 
   if (token) {
     navActions.innerHTML = `
       <div class="user-info-wrapper">
         <span class="user-name">${username || "Utilisateur"}</span>
-        <a href="./dashboard.html" class="btn btn-primary header-btn" id="see-panier">Panier</a>
+        <a href="./dashboard.html" class="btn btn-primary header-btn">Panier</a>
         <button class="btn btn-logout header-btn" id="logout">Déconnexion</button>
       </div>
     `;
     document.getElementById("logout").addEventListener("click", function () {
-      localStorage.removeItem("username");
-      localStorage.removeItem("token");
-      localStorage.removeItem("userId");
+      localStorage.clear();
       window.location.href = "index.html";
     });
   } else {
@@ -131,77 +165,40 @@ updateHeader();
 if (username === "admin") {
   const creationDiv = document.getElementById("creation");
   if (creationDiv) {
-    creationDiv.innerHTML = `<form id="createForm">
-      <input type="text" id="nom" placeholder="Nom du produit">
-      <input type="number" id ="prix" placeholder="Prix du produit" step="1">
-      <button id="creer" type="submit" class="btn btn-primary">Créer ce produit</button>
+    creationDiv.innerHTML = `
+    <form id="createForm">
+      <input type="text" id="nom" placeholder="Nom du produit" required>
+      <input type="number" id="prix" placeholder="Prix" step="0.01" required>
+      <button type="submit" class="btn btn-primary">Créer</button>
     </form>`;
-
-    const form = document.getElementById("createForm");
-    form.addEventListener("submit", CreateProduit);
-  }
-} else {
-  const creationDiv = document.getElementById("creation");
-  if (creationDiv) {
-    creationDiv.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-style: italic; margin-bottom: 0; margin-top: 20px;">Parcourez notre catalogue et organisez vos achats en quelques clics.</p>`;
+    document
+      .getElementById("createForm")
+      .addEventListener("submit", CreateProduit);
   }
 }
 
-function CreateProduit(event) {
-  event.preventDefault();
-
-  const name = document.getElementById("nom").value;
-  const prix = document.getElementById("prix").value;
-
-  fetch("/api/produits/create", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, prix }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.message) {
-        location.reload();
-      } else {
-        alert("Erreur de création d'un produit");
-      }
-    });
-}
-
+// Pagination
 const nextBtn = document.getElementById("next-page");
 if (nextBtn) {
-  nextBtn.addEventListener("click", async function () {
-    const previousScrollY = window.scrollY;
+  nextBtn.addEventListener("click", async () => {
     offset += limit;
-    const pagin = document.getElementById("index-pagination");
-    if (pagin) pagin.innerHTML = `Page : ${offset / 10 + 1}`;
     await afficherProduits();
-    window.scrollTo(0, previousScrollY);
   });
 }
 
 const lastBtn = document.getElementById("last-page");
 if (lastBtn) {
-  lastBtn.addEventListener("click", async function () {
+  lastBtn.addEventListener("click", async () => {
     if (offset >= limit) {
-      const previousScrollY = window.scrollY;
       offset -= limit;
-      const pagin = document.getElementById("index-pagination");
-      if (pagin) pagin.innerHTML = `Page : ${offset / 10 + 1}`;
       await afficherProduits();
-      window.scrollTo(0, previousScrollY);
     }
   });
 }
 
-window.ajouterAuPanier = function (idProduit) {
-  fetch("/api/liste/add", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, idProduit }),
-  }).then(() => {
-    showToast("Produit ajouté au panier !", "success");
-  });
-};
+const searchBtn = document.getElementById("validerRecherche");
+if (searchBtn) {
+  searchBtn.addEventListener("click", rechercherProduit);
+}
 
 afficherProduits();

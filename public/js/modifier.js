@@ -1,6 +1,5 @@
 const urlParams = new URLSearchParams(window.location.search);
 const productId = urlParams.get("id");
-
 fetch(`/api/produits/${productId}`)
   .then((res) => {
     if (!res.ok) throw new Error("Produit non trouvé");
@@ -22,7 +21,10 @@ document.getElementById("editForm").addEventListener("submit", function (e) {
 
   fetch(`/api/produits/${productId}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
     body: JSON.stringify({ name, price }),
   })
     .then((res) => res.json())

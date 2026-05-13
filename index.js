@@ -1,3 +1,4 @@
+require("dotenv").config();
 // Configuration
 const PORT = 8080;
 

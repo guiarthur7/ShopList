@@ -4,8 +4,8 @@
     --bg-color: #10121A;
     --card-bg: #161C2D;
     --card-border: #252C40;
-    --primary-color: #5380FF;
-    --primary-hover: #4066cc;
+    --primary-color: #10B981;
+    --primary-hover: #059669;
     --secondary-bg: #1E2436;
     --secondary-hover: #262c3e;
     --text-main: #FFFFFF;
@@ -220,7 +220,7 @@ input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="number"]:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(83, 128, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }
 
 .search {
