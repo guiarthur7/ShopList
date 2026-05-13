@@ -133,7 +133,7 @@ if (username === "admin") {
   if (creationDiv) {
     creationDiv.innerHTML = `<form id="createForm">
       <input type="text" id="nom" placeholder="Nom du produit">
-      <input type="text" id ="prix" placeholder="Prix du produit">
+      <input type="number" id ="prix" placeholder="Prix du produit" step="1">
       <button id="creer" type="submit" class="btn btn-primary">Créer ce produit</button>
     </form>`;
 
