@@ -15,7 +15,7 @@ exports.register = async (req, res) => {
   const secret = process.env.JWT_SECRET;
   const roles = await role.findOne({ where: { name: "USER" } });
   if (!roles) {
-    return res.status(404).json("Erreur lors de l'attribution du rôle");
+    return res.status(404).json({ error: "Erreur lors de l'attribution du rôle" });
   }
   const user = await users.create({
     username,
