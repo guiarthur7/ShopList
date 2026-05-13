@@ -24,6 +24,81 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (ctaGroup) {
-        ctaGroup.innerHTML = `<a href="/liste.html" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem;">Accéder aux articles</a>`;
-    }  }
+      ctaGroup.innerHTML = `<a href="/liste.html" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem;">Accéder aux articles</a>`;
+    }
+  }
+
+  const phraseArray = [
+    "S",
+    "i",
+    "m",
+    "p",
+    "l",
+    "i",
+    "f",
+    "i",
+    "e",
+    "z",
+    " ",
+    "v",
+    "o",
+    "s",
+    " ",
+    "c",
+    "o",
+    "u",
+    "r",
+    "s",
+    "e",
+    "s",
+    ",",
+    "<",
+    "b",
+    "r",
+    ">",
+    "m",
+    "a",
+    "î",
+    "t",
+    "r",
+    "i",
+    "s",
+    "e",
+    "z",
+    " ",
+    "v",
+    "o",
+    "t",
+    "r",
+    "e",
+    " ",
+    "b",
+    "u",
+    "d",
+    "g",
+    "e",
+    "t",
+    ".",
+  ];
+
+  const target = document.getElementById("hero-title");
+  let i = 0;
+
+  if (target) {
+    target.innerHTML = "";
+
+    const timer = setInterval(() => {
+      if (i < phraseArray.length) {
+        if (phraseArray[i] === "<") {
+          target.insertAdjacentHTML("beforeend", "<br>");
+          i += 4;
+        } else {
+          target.insertAdjacentHTML("beforeend", phraseArray[i]);
+          i++;
+        }
+      } else {
+        clearInterval(timer);
+      }
+    }, 80);
+  }
 });
