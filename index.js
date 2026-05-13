@@ -24,10 +24,10 @@ server.use("/api/produits", produitRoutes);
 server.use("/api/users", authRoutes);
 server.use("/api/liste", listeRoutes);
 
-// Servir les fichiers statiques (HTML, CSS, JS) depuis le dossier public
+// Servir les fichiers statiques
 server.use(express.static("public"));
 
-// Démarrage serveur (UNE SEULE FOIS, à la fin)
+// Démarrage serveur
 server.listen(PORT, () => {
   console.log(`🚀 Serveur lancé sur http://localhost:${PORT}`);
 });

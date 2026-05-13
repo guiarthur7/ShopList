@@ -7,18 +7,16 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Bienvenue sur ShopList</h1>
-        <p>Gérez vos listes de courses facilement</p>
-        
-        <div class="buttons">
-            <div class="buttons" id="auth-buttons">
-                <a href="login.html" class="btn">Se connecter</a>
-                <a href="register.html" class="btn">S'inscrire</a>
-            </div>
-            <div id="user-info"></div>
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo">ShopList</div>
+            <nav id="nav-actions">
+            </nav>
         </div>
+    </header>
 
+    <div class="container">
+        
         <div id="creation">
         </div>
         <div id="pagination">
@@ -33,6 +31,7 @@
 
         <div id="listeProduits"></div>
     </div>
+    <script src="js/utils.js"></script>
     <script src="js/index.js"></script>
 </body>
 </html>

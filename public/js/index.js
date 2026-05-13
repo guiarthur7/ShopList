@@ -1,12 +1,16 @@
 let offset = 0;
 let limit = 10;
+const username = localStorage.getItem("username");
 
 async function afficherProduits() {
-  document.getElementById("listeProduits").innerHTML = "";
+  const container = document.getElementById("listeProduits");
+  if (!container) return;
+
+  container.innerHTML = "";
   const response = await fetch(`/api/produits?offset=${offset}&limit=${limit}`);
 
   if (!response.ok) {
-    alert("Erreur lors du chargement des produits");
+    showToast("Erreur lors du chargement des produits", "error");
     offset = Math.max(0, offset - limit);
     return;
   }
@@ -14,28 +18,33 @@ async function afficherProduits() {
 
   data.forEach((produit) => {
     const div = document.createElement("div");
+    div.className = "product-item";
     div.innerHTML = `
       <p>${produit.name} - ${produit.price}€</p>
-      ${!username ? "" : `<button onclick="ajouterAuPanier(${produit.id})">Ajouter</button>`}
-      <div class="adminbouton">
-        ${username === "admin" ? `<button class="delete-btn" data-id="${produit.id}">Supprimer</button>` : ""}
+      <div class="product-actions">
+        ${!username ? "" : `<button class="btn btn-primary" onclick="ajouterAuPanier(${produit.id})">Ajouter</button>`}
+        ${username === "admin" ? `<button class="btn delete-btn" data-id="${produit.id}">Supprimer</button>` : ""}
       </div>
     `;
-    document.getElementById("listeProduits").appendChild(div);
+    container.appendChild(div);
   });
+
   if (username === "admin") {
     document.querySelectorAll(".delete-btn").forEach((btn) => {
-      btn.addEventListener("click", async function () {
+      btn.onclick = async function () {
         const id = this.dataset.id;
         await fetch(`/api/produits/${id}`, { method: "DELETE" });
         afficherProduits();
-      });
+      };
     });
   }
 }
 
 async function rechercherProduit() {
-  document.getElementById("listeProduits").innerHTML = "";
+  const container = document.getElementById("listeProduits");
+  if (!container) return;
+
+  container.innerHTML = "";
   const valeurRecherche = document.getElementById("recherche").value;
   const response = await fetch(
     `/api/produits/search?search=${encodeURIComponent(valeurRecherche)}&offset=${offset}&limit=${limit}`,
@@ -48,56 +57,80 @@ async function rechercherProduit() {
   const data = await response.json();
   data.forEach((produit) => {
     const div = document.createElement("div");
+    div.className = "product-item";
     div.innerHTML = `
       <p>${produit.name} - ${produit.price}€</p>
-      <div>
-        ${!username ? " " : `<button onclick="ajouterAuPanier(${produit.id})">Ajouter</button>`}
-      </div>
-      <div class="adminbouton">
-        ${username === "admin" ? `<button class="delete-btn" data-id="${produit.id}">Supprimer</button>` : ""}
+      <div class="product-actions">
+        ${!username ? "" : `<button class="btn btn-primary" onclick="ajouterAuPanier(${produit.id})">Ajouter</button>`}
+        ${username === "admin" ? `<button class="btn delete-btn" data-id="${produit.id}">Supprimer</button>` : ""}
       </div>
     `;
-    document.getElementById("listeProduits").appendChild(div);
+    container.appendChild(div);
   });
+
   if (username === "admin") {
     document.querySelectorAll(".delete-btn").forEach((btn) => {
-      btn.addEventListener("click", async function () {
+      btn.onclick = async function () {
         const id = this.dataset.id;
         await fetch(`/api/produits/${id}`, { method: "DELETE" });
         rechercherProduit();
-      });
+      };
     });
   }
 }
 
-document
-  .getElementById("validerRecherche")
-  .addEventListener("click", rechercherProduit);
-
-const username = localStorage.getItem("username");
-
-if (username) {
-  document.getElementById("auth-buttons").style.display = "none";
-  document.getElementById("user-info").innerHTML =
-    `Bienvenue ${username} <a href="./dashboard.html"><button id="see-panier">Voir mon panier</button></a> <button id="logout">Se déconnecter</button>`;
-  document.getElementById("logout").addEventListener("click", function () {
-    localStorage.removeItem("username");
-    localStorage.removeItem("token");
-    location.reload();
-  });
+const searchBtn = document.getElementById("validerRecherche");
+if (searchBtn) {
+  searchBtn.addEventListener("click", rechercherProduit);
 }
+
+const navActions = document.getElementById("nav-actions");
+
+function updateHeader() {
+  if (!navActions) return;
+
+  if (username) {
+    navActions.innerHTML = `
+      <div class="user-info-wrapper">
+        <span class="user-name">${username}</span>
+        <a href="./dashboard.html" class="btn btn-primary header-btn" id="see-panier">Panier</a>
+        <button class="btn btn-logout header-btn" id="logout">Déconnexion</button>
+      </div>
+    `;
+    document.getElementById("logout").addEventListener("click", function () {
+      localStorage.removeItem("username");
+      localStorage.removeItem("token");
+      location.reload();
+    });
+  } else {
+    navActions.innerHTML = `
+      <div class="auth-buttons-wrapper">
+        <a href="login.html" class="btn btn-dark header-btn">Se connecter</a>
+        <a href="register.html" class="btn btn-primary header-btn">S'inscrire</a>
+      </div>
+    `;
+  }
+}
+
+updateHeader();
 
 if (username === "admin") {
-  document.getElementById("creation").innerHTML = `<form id="createForm">
-    <input type="text" id="nom" placeholder="Nom du produit">
-    <input type="text" id ="prix" placeholder="Prix du produit">
-    <button id="creer">Créer ce produit</button>
-  </form>`;
-}
+  const creationDiv = document.getElementById("creation");
+  if (creationDiv) {
+    creationDiv.innerHTML = `<form id="createForm">
+      <input type="text" id="nom" placeholder="Nom du produit">
+      <input type="text" id ="prix" placeholder="Prix du produit">
+      <button id="creer" type="submit" class="btn btn-primary">Créer ce produit</button>
+    </form>`;
 
-const formdiv = document.getElementById("createForm");
-if (formdiv) {
-  formdiv.addEventListener("submit", CreateProduit);
+    const form = document.getElementById("createForm");
+    form.addEventListener("submit", CreateProduit);
+  }
+} else {
+  const creationDiv = document.getElementById("creation");
+  if (creationDiv) {
+    creationDiv.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-style: italic; margin-bottom: 0; margin-top: 20px;">Parcourez notre catalogue et organisez vos achats en quelques clics.</p>`;
+  }
 }
 
 function CreateProduit(event) {
@@ -111,50 +144,50 @@ function CreateProduit(event) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, prix }),
   })
-    .then((message) => message.json())
+    .then((res) => res.json())
     .then((data) => {
       if (data.message) {
         location.reload();
-      } else if (data.error) {
+      } else {
         alert("Erreur de création d'un produit");
       }
     });
 }
 
-document
-  .getElementById("next-page")
-  .addEventListener("click", async function () {
+const nextBtn = document.getElementById("next-page");
+if (nextBtn) {
+  nextBtn.addEventListener("click", async function () {
     const previousScrollY = window.scrollY;
     offset += limit;
-    document.getElementById("index-pagination").innerHTML =
-      `Page : ${offset / 10}`;
+    const pagin = document.getElementById("index-pagination");
+    if (pagin) pagin.innerHTML = `Page : ${offset / 10 + 1}`;
     await afficherProduits();
-    window.requestAnimationFrame(() => {
-      window.scrollTo(0, previousScrollY);
-    });
+    window.scrollTo(0, previousScrollY);
   });
+}
 
-document
-  .getElementById("last-page")
-  .addEventListener("click", async function () {
+const lastBtn = document.getElementById("last-page");
+if (lastBtn) {
+  lastBtn.addEventListener("click", async function () {
     if (offset >= limit) {
       const previousScrollY = window.scrollY;
       offset -= limit;
-      document.getElementById("index-pagination").innerHTML =
-        `Page : ${offset / 10}`;
+      const pagin = document.getElementById("index-pagination");
+      if (pagin) pagin.innerHTML = `Page : ${offset / 10 + 1}`;
       await afficherProduits();
-      window.requestAnimationFrame(() => {
-        window.scrollTo(0, previousScrollY);
-      });
+      window.scrollTo(0, previousScrollY);
     }
   });
+}
 
-function ajouterAuPanier(idProduit) {
+window.ajouterAuPanier = function (idProduit) {
   fetch("/api/liste/add", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, idProduit }),
+  }).then(() => {
+    showToast("Produit ajouté au panier !", "success");
   });
-}
+};
 
 afficherProduits();

@@ -12,6 +12,7 @@ async function AfficherListeProduit() {
   });
 
   const data = await response.json();
+  let total = 0;
 
   data.forEach((item) => {
     const produit = item.id_produit_produit;
@@ -19,13 +20,23 @@ async function AfficherListeProduit() {
       return;
     }
 
+    total += parseFloat(produit.price) || 0;
+
     const div = document.createElement("div");
+    div.className = "product-item";
     div.innerHTML = `
       <p>${produit.name} - ${produit.price}€</p>
-      <button onclick="RetirerProduitListe(${produit.id})">Retirer</button>
+      <div class="product-actions">
+        <button class="btn btn-logout" onclick="RetirerProduitListe(${produit.id})">Retirer</button>
+      </div>
     `;
     listesContainer.appendChild(div);
   });
+
+  const totalElement = document.getElementById("totalPrix");
+  if (totalElement) {
+    totalElement.textContent = `${total.toFixed(2)}€`;
+  }
 }
 
 async function RetirerProduitListe(idProduit) {
@@ -37,7 +48,7 @@ async function RetirerProduitListe(idProduit) {
   if (response) {
     AfficherListeProduit();
   } else {
-    alert("erreur lors de la suppression");
+    showToast("Erreur lors de la suppression", "error");
   }
 }
 

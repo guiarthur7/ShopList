@@ -17,8 +17,8 @@ function ValiderCo(event) {
         localStorage.setItem("token", data.token);
         window.location.href = "index.html";
       } else if (data.error) {
-        alert(data.error);
+        showToast(data.error, "error");
       }
     })
-    .catch(() => alert("Erreur lors de la connexion"));
+    .catch(() => showToast("Erreur lors de la connexion", "error"));
 }
