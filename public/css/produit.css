@@ -1,0 +1,135 @@
+.product-detail-container {
+    max-width: 600px;
+    margin: 3rem auto;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--border-radius-lg);
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+}
+
+.product-detail-header {
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--card-border);
+    padding-bottom: 1.5rem;
+}
+
+.product-detail-header h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+
+.product-id {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+#product-image-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+#product-image {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: var(--border-radius-lg);
+    object-fit: cover;
+}
+
+.product-detail-body {
+    margin-bottom: 2.5rem;
+}
+
+.detail-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem;
+    background: var(--secondary-bg);
+    border-radius: var(--border-radius-md);
+    margin-bottom: 1rem;
+}
+
+.detail-field#description-section {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.detail-description {
+    margin-top: 0.75rem;
+    color: var(--text-main);
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.detail-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.product-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.product-actions .btn {
+    flex: 1;
+    min-width: 150px;
+}
+
+.btn-retour {
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+}
+
+.error-message {
+    background: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    color: var(--danger-color);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-md);
+    text-align: center;
+    margin: 2rem auto;
+    max-width: 600px;
+}
+
+@media (max-width: 640px) {
+    .product-detail-container {
+        padding: 1.5rem;
+        margin: 1rem auto;
+    }
+
+    .product-detail-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .product-actions {
+        flex-direction: column;
+    }
+
+    .product-actions .btn {
+        flex: none;
+        width: 100%;
+    }
+
+    #product-image {
+        max-height: 300px;
+    }
+}

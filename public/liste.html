@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShopList - Ma Liste</title>
+    <title>Le Coin Fermier - Ma Liste</title>
     <link rel="stylesheet" href="css/style.css">
     <script>
         if (!localStorage.getItem('token')) {
@@ -14,8 +14,12 @@
 <body>
     <header class="main-header">
         <div class="header-content">
-            <a href="/index.html"><div class="logo">ShopList</div></a>
+            <div class="logo" onclick="window.location.href='/'">Le Coin Fermier</div>
             <nav id="nav-actions">
+                <div class="auth-buttons-wrapper">
+                    <a href="/login.html" class="btn header-btn">Connexion</a>
+                    <a href="/register.html" class="btn btn-primary header-btn">S'inscrire</a>
+                </div>
             </nav>
         </div>
     </header>
@@ -23,6 +27,7 @@
     <div class="container">
         
         <div id="creation">
+            <p>Tous les produits et leur prix sont au kilo !<p>
         </div>
         <div id="pagination">
             <div class="search">
@@ -36,7 +41,13 @@
 
         <div id="listeProduits"></div>
     </div>
+
+    <footer>
+        &copy; 2026 Le Coin Fermier - Made by heart
+    </footer>
+
     <script src="js/utils.js"></script>
+    <script src="js/header.js"></script>
     <script src="js/liste.js"></script>
 </body>
 </html>

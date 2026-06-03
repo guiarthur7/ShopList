@@ -1,7 +1,27 @@
 let offset = 0;
-let limit = 10;
+let limit = 12;
 const username = localStorage.getItem("username");
 const token = localStorage.getItem("token");
+
+function renderProductHTML(produit) {
+  return `
+    <img src="/produitImages/${produit.id}.jpg" 
+         class="product-thumbnail" 
+         onerror="this.onerror=null; this.src='/produitImages/${produit.id}.png'; this.onerror=function(){this.onerror=null; this.src='/produitImages/${produit.id}.webp'; this.onerror=function(){this.onerror=null; this.src='/produitImages/default.png';}};"
+         alt="${produit.name}">
+    <div class="product-info">
+      <div class="product-details">
+        <h3 class="product-name">${produit.name}</h3>
+        <p class="product-price">${produit.price}€</p>
+      </div>
+    </div>
+    <div class="product-actions">
+      ${!token ? "" : `<button class="btn btn-primary" onclick="event.stopPropagation(); ajouterAuPanier(${produit.id})">Ajouter</button>`}
+      ${username === "admin" ? `<button class="btn delete-btn" data-id="${produit.id}">Supprimer</button>` : ""}
+      ${username === "admin" ? `<a href="/modifproduit.html?id=${produit.id}" class="btn btn-dark" onclick="event.stopPropagation()">Modifier</a>` : ""}
+    </div>
+  `;
+}
 
 async function afficherProduits() {
   const container = document.getElementById("listeProduits");
@@ -20,27 +40,35 @@ async function afficherProduits() {
   data.forEach((produit) => {
     const div = document.createElement("div");
     div.className = "product-item";
-    div.innerHTML = `
-      <p>${produit.name} - ${produit.price}€</p>
-      <a href="/produit.html?id=${produit.id}"><p>-></p></a>
-      <div class="product-actions">
-        ${!token ? "" : `<button class="btn btn-primary" onclick="ajouterAuPanier(${produit.id})">Ajouter</button>`}
-        ${username === "admin" ? `<button class="btn delete-btn" data-id="${produit.id}">Supprimer</button>` : ""}
-        ${username === "admin" ? `<a href="/modifproduit.html?id=${produit.id}" class="btn btn-warning">Modifier</a>` : ""}
-      </div>
-    `;
+    div.style.cursor = "pointer";
+    div.onclick = function (e) {
+      if (
+        e.target.tagName !== "BUTTON" &&
+        e.target.tagName !== "A" &&
+        !e.target.closest("button") &&
+        !e.target.closest("a")
+      ) {
+        window.location.href = `/produit.html?id=${produit.id}`;
+      }
+    };
+    div.innerHTML = renderProductHTML(produit);
     container.appendChild(div);
   });
 
   if (username === "admin") {
     document.querySelectorAll(".delete-btn").forEach((btn) => {
-      btn.onclick = async function () {
+      btn.onclick = async function (e) {
+        e.stopPropagation();
         const id = this.dataset.id;
-        if (confirm("Supprimer ce produit ?")) {
+        const confirmed = await showConfirm(
+          "Supprimer le produit ?",
+          "Cette action est irréversible. Le produit sera définitivement retiré du catalogue.",
+        );
+        if (confirmed) {
           await fetch(`/api/produits/${id}`, {
             method: "DELETE",
             headers: {
-              Authorization: `Bearer ${token}`, // Protection Middleware
+              Authorization: `Bearer ${token}`,
             },
           });
           afficherProduits();
@@ -71,19 +99,25 @@ async function rechercherProduit() {
   data.forEach((produit) => {
     const div = document.createElement("div");
     div.className = "product-item";
-    div.innerHTML = `
-      <p>${produit.name} - ${produit.price}€</p>
-      <div class="product-actions">
-        ${!token ? "" : `<button class="btn btn-primary" onclick="ajouterAuPanier(${produit.id})">Ajouter</button>`}
-        ${username === "admin" ? `<button class="btn delete-btn" data-id="${produit.id}">Supprimer</button>` : ""}
-      </div>
-    `;
+    div.style.cursor = "pointer";
+    div.onclick = function (e) {
+      if (
+        e.target.tagName !== "BUTTON" &&
+        e.target.tagName !== "A" &&
+        !e.target.closest("button") &&
+        !e.target.closest("a")
+      ) {
+        window.location.href = `/produit.html?id=${produit.id}`;
+      }
+    };
+    div.innerHTML = renderProductHTML(produit);
     container.appendChild(div);
   });
 
   if (username === "admin") {
     document.querySelectorAll(".delete-btn").forEach((btn) => {
-      btn.onclick = async function () {
+      btn.onclick = async function (e) {
+        e.stopPropagation();
         const id = this.dataset.id;
         await fetch(`/api/produits/${id}`, {
           method: "DELETE",
@@ -97,36 +131,12 @@ async function rechercherProduit() {
   }
 }
 
-function CreateProduit(event) {
-  event.preventDefault();
-
-  const name = document.getElementById("nom").value;
-  const prix = document.getElementById("prix").value;
-
-  fetch("/api/produits/create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ name, prix }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.id || data.message) {
-        location.reload();
-      } else {
-        alert("Erreur de création du produit");
-      }
-    });
-}
-
 window.ajouterAuPanier = function (idProduit) {
   fetch("/api/liste/add", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // Sécurisé aussi
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ username, idProduit }),
   }).then(() => {
@@ -134,50 +144,16 @@ window.ajouterAuPanier = function (idProduit) {
   });
 };
 
-function updateHeader() {
-  const navActions = document.getElementById("nav-actions");
-  if (!navActions) return;
-
-  if (token) {
-    navActions.innerHTML = `
-      <div class="user-info-wrapper">
-        <span class="user-name">${username || "Utilisateur"}</span>
-        <a href="./dashboard.html" class="btn btn-primary header-btn">Panier</a>
-        <button class="btn btn-logout header-btn" id="logout">Déconnexion</button>
-      </div>
-    `;
-    document.getElementById("logout").addEventListener("click", function () {
-      localStorage.clear();
-      window.location.href = "index.html";
-    });
-  } else {
-    navActions.innerHTML = `
-      <div class="auth-buttons-wrapper">
-        <a href="login.html" class="btn btn-dark header-btn">Se connecter</a>
-        <a href="register.html" class="btn btn-primary header-btn">S'inscrire</a>
-      </div>
-    `;
-  }
-}
-
-updateHeader();
-
 if (username === "admin") {
   const creationDiv = document.getElementById("creation");
   if (creationDiv) {
     creationDiv.innerHTML = `
-    <form id="createForm">
-      <input type="text" id="nom" placeholder="Nom du produit" required>
-      <input type="number" id="prix" placeholder="Prix" step="0.01" required>
-      <button type="submit" class="btn btn-primary">Créer</button>
-    </form>`;
-    document
-      .getElementById("createForm")
-      .addEventListener("submit", CreateProduit);
+    <div style="margin-bottom: 2rem; text-align: center;">
+      <a href="/creer_produit.html" class="btn btn-primary" style="display: inline-block; width: auto;">Ajouter un produit</a>
+    </div>`;
   }
 }
 
-// Pagination
 const nextBtn = document.getElementById("next-page");
 if (nextBtn) {
   nextBtn.addEventListener("click", async () => {

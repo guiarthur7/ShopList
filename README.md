@@ -1,4 +1,4 @@
-# ShopList
+# Le Coin Fermier
 
 Application web Node.js pour gerer une liste de courses.
 

@@ -5,6 +5,24 @@ if (!token) {
   window.location.href = "index.html";
 }
 
+function renderCartProductHTML(produit) {
+  return `
+    <img src="/produitImages/${produit.id}.jpg" 
+         class="product-thumbnail" 
+         onerror="this.onerror=null; this.src='/produitImages/${produit.id}.png'; this.onerror=function(){this.onerror=null; this.src='/produitImages/${produit.id}.webp'; this.onerror=function(){this.onerror=null; this.src='/produitImages/default.png';}};"
+         alt="${produit.name}">
+    <div class="product-info">
+      <div class="product-details">
+        <h3 class="product-name">${produit.name}</h3>
+        <p class="product-price">${produit.price}€</p>
+      </div>
+    </div>
+    <div class="product-actions">
+      <button class="btn btn-logout" onclick="RetirerProduitListe(${produit.id})">Retirer</button>
+    </div>
+  `;
+}
+
 async function AfficherListeProduit() {
   const listesContainer = document.getElementById("listeProduits");
 
@@ -29,12 +47,7 @@ async function AfficherListeProduit() {
 
     const div = document.createElement("div");
     div.className = "product-item";
-    div.innerHTML = `
-      <p>${produit.name} - ${produit.price}€</p>
-      <div class="product-actions">
-        <button class="btn btn-logout" onclick="RetirerProduitListe(${produit.id})">Retirer</button>
-      </div>
-    `;
+    div.innerHTML = renderCartProductHTML(produit);
     listesContainer.appendChild(div);
   });
 

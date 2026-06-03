@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier un produit - ShopList</title>
+    <title>Modifier un produit - Le Coin Fermier</title>
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/forms.css">
 </head>
 <body>
     <header class="main-header">
         <div class="header-content">
-            <div class="logo" onclick="window.location.href='/'">ShopList</div>
+            <div class="logo" onclick="window.location.href='/'">Le Coin Fermier</div>
             <nav id="nav-actions">
+                <div class="auth-buttons-wrapper">
+                    <a href="/login.html" class="btn header-btn">Connexion</a>
+                    <a href="/register.html" class="btn btn-primary header-btn">S'inscrire</a>
+                </div>
             </nav>
         </div>
     </header>
@@ -31,7 +36,7 @@
                     <label for="price">Prix (€)</label>
                     <input type="number" id="price" class="form-control" placeholder="Ex: 10" step="1" required>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Enregistrer les modifications</button>
+                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
             </form>
 
             <div class="auth-footer">
@@ -41,10 +46,11 @@
     </main>
 
     <footer>
-        &copy; 2026 ShopList - Créé avec passion
+        &copy; 2026 Le Coin Fermier - Made by heart
     </footer>
 
     <script src="js/utils.js"></script>
+    <script src="js/header.js"></script>
     <script src="js/modifier.js"></script>
     <script>
         if (localStorage.username !== "admin") {

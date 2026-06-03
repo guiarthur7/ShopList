@@ -1,15 +1,37 @@
 const { produit, liste } = require("../models");
+const fs = require("fs");
+const path = require("path");
 
 exports.createProduit = async (req, res) => {
   try {
     console.log(req.body);
-    const { name, prix } = req.body;
-    const prod = await produit.create({ name: name, price: prix });
+    const { name, prix, description } = req.body;
+    const prod = await produit.create({
+      name: name,
+      price: prix,
+      description: description,
+    });
+
+    if (req.file && prod) {
+      const imageDir = path.join(__dirname, "../public/produitImages");
+
+      if (!fs.existsSync(imageDir)) {
+        fs.mkdirSync(imageDir, { recursive: true });
+      }
+
+      const ext = path.extname(req.file.originalname);
+      const imagePath = path.join(imageDir, `${prod.id}${ext}`);
+      fs.writeFileSync(imagePath, req.file.buffer);
+    }
 
     if (prod) {
-      res.status(201).json({ message: "Produit créé avec succès", id: prod.id });
+      res
+        .status(201)
+        .json({ message: "Produit créé avec succès", id: prod.id });
     } else {
-      res.status(400).json({ error: "Erreur lors de la création d'un produit" });
+      res
+        .status(400)
+        .json({ error: "Erreur lors de la création d'un produit" });
     }
   } catch (error) {
     console.error(error);
@@ -58,6 +80,16 @@ exports.getProduitByName = async (req, res) => {
 exports.deleteProduit = async (req, res) => {
   try {
     const { id } = req.params;
+    const extensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
+    const imageDir = path.join(__dirname, "../public/produitImages");
+
+    for (const ext of extensions) {
+      const imagePath = path.join(imageDir, `${id}${ext}`);
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+    }
+
     await liste.destroy({ where: { id_produit: id } });
     const deleted = await produit.destroy({ where: { id: id } });
     if (deleted) {
@@ -95,7 +127,9 @@ exports.updateProduit = async (req, res) => {
     if (updated[0] > 0) {
       res.json({ message: "Produit mis à jour avec succès" });
     } else {
-      res.status(404).json({ error: "Erreur lors de la mise à jour ou produit non trouvé" });
+      res
+        .status(404)
+        .json({ error: "Erreur lors de la mise à jour ou produit non trouvé" });
     }
   } catch (error) {
     console.error(error);
